@@ -38,13 +38,13 @@ export default function MigrationReport({ metrics }) {
           <div className="rc-val" style={{color: "var(--green)"}}>{metrics.qualityScore}</div>
           <div className="rc-sub">out of 100 — LLM-as-judge evaluation</div>
           <div className="rc-bar-wrap">
-            <div className="rc-bar-label"><span>Bedrock Equivalent</span><span style={{color: "var(--green)"}}>{metrics.qualityScore}</span></div>
+            <div className="rc-bar-label"><span>NVIDIA Equivalent</span><span style={{color: "var(--green)"}}>{metrics.qualityScore}</span></div>
             <div className="rc-bar">
               <div className="rc-bar-fill" style={{width: `${metrics.qualityScore}%`, background: "var(--green)"}}></div>
             </div>
-            <div className="rc-bar-label" style={{marginTop: ".6rem"}}><span>Source Model</span><span style={{color: "var(--muted)"}}>{metrics.sourceQuality}</span></div>
+            <div className="rc-bar-label" style={{marginTop: ".6rem"}}><span>Source Model</span><span style={{color: "#a855f7"}}>{metrics.sourceQuality}</span></div>
             <div className="rc-bar">
-              <div className="rc-bar-fill" style={{width: `${metrics.sourceQuality}%`, background: "var(--muted2)"}}></div>
+              <div className="rc-bar-fill" style={{width: `${metrics.sourceQuality}%`, background: "#a855f7"}}></div>
             </div>
           </div>
         </div>
@@ -53,15 +53,15 @@ export default function MigrationReport({ metrics }) {
         <div className="report-card" style={{ transitionDelay: '150ms' }}>
           <div className="rc-label">LATENCY COMPARISON</div>
           <div className="rc-val" style={{color: "var(--cyan)"}}>{metrics.latencyDiff}</div>
-          <div className="rc-sub">Bedrock is faster on this workload</div>
+          <div className="rc-sub">NVIDIA is faster on this workload</div>
           <div className="rc-bar-wrap">
-            <div className="rc-bar-label"><span>Bedrock · p50</span><span style={{color: "var(--cyan)"}}>{metrics.targetLatency}</span></div>
+            <div className="rc-bar-label"><span>NVIDIA · p50</span><span style={{color: "var(--cyan)"}}>{metrics.targetLatency}</span></div>
             <div className="rc-bar">
               <div className="rc-bar-fill" style={{width: "55%", background: "var(--cyan)"}}></div>
             </div>
-            <div className="rc-bar-label" style={{marginTop: ".6rem"}}><span>Source · p50</span><span style={{color: "var(--muted)"}}>{metrics.sourceLatency}</span></div>
+            <div className="rc-bar-label" style={{marginTop: ".6rem"}}><span>Source · p50</span><span style={{color: "#a855f7"}}>{metrics.sourceLatency}</span></div>
             <div className="rc-bar">
-              <div className="rc-bar-fill" style={{width: "72%", background: "var(--muted2)"}}></div>
+              <div className="rc-bar-fill" style={{width: "72%", background: "#a855f7"}}></div>
             </div>
           </div>
         </div>
@@ -70,15 +70,15 @@ export default function MigrationReport({ metrics }) {
         <div className="report-card" style={{ transitionDelay: '300ms' }}>
           <div className="rc-label">TOKEN USAGE EFFICIENCY</div>
           <div className="rc-val" style={{color: "var(--orange)"}}>{metrics.tokenDiff}</div>
-          <div className="rc-sub">Bedrock consumes fewer output tokens</div>
+          <div className="rc-sub">NVIDIA consumes fewer output tokens</div>
           <div className="rc-bar-wrap">
-            <div className="rc-bar-label"><span>Output tokens (Bedrock)</span><span style={{color: "var(--orange)"}}>{metrics.targetTokens}</span></div>
+            <div className="rc-bar-label"><span>Output tokens (NVIDIA)</span><span style={{color: "var(--orange)"}}>{metrics.targetTokens}</span></div>
             <div className="rc-bar">
               <div className="rc-bar-fill" style={{width: "62%", background: "var(--orange)"}}></div>
             </div>
-            <div className="rc-bar-label" style={{marginTop: ".6rem"}}><span>Output tokens (Source)</span><span style={{color: "var(--muted)"}}>{metrics.sourceTokens}</span></div>
+            <div className="rc-bar-label" style={{marginTop: ".6rem"}}><span>Output tokens (Source)</span><span style={{color: "#a855f7"}}>{metrics.sourceTokens}</span></div>
             <div className="rc-bar">
-              <div className="rc-bar-fill" style={{width: "76%", background: "var(--muted2)"}}></div>
+              <div className="rc-bar-fill" style={{width: "76%", background: "#a855f7"}}></div>
             </div>
           </div>
         </div>
@@ -89,13 +89,13 @@ export default function MigrationReport({ metrics }) {
           <div className="rc-val" style={{color: "var(--aws)"}}>{metrics.savingsAmount}</div>
           <div className="rc-sub">based on current API call volume (1M req/mo)</div>
           <div className="rc-bar-wrap">
-            <div className="rc-bar-label"><span>Amazon Bedrock</span><span style={{color: "var(--aws)"}}>{metrics.targetCost}</span></div>
+            <div className="rc-bar-label"><span>NVIDIA NIMs</span><span style={{color: "var(--aws)"}}>{metrics.targetCost}</span></div>
             <div className="rc-bar">
               <div className="rc-bar-fill" style={{width: "58%", background: "var(--aws)"}}></div>
             </div>
-            <div className="rc-bar-label" style={{marginTop: ".6rem"}}><span>Current Model</span><span style={{color: "var(--muted)"}}>{metrics.sourceCost}</span></div>
+            <div className="rc-bar-label" style={{marginTop: ".6rem"}}><span>Current Model</span><span style={{color: "#a855f7"}}>{metrics.sourceCost}</span></div>
             <div className="rc-bar">
-              <div className="rc-bar-fill" style={{width: "100%", background: "var(--muted2)"}}></div>
+               <div className="rc-bar-fill" style={{width: "100%", background: "#a855f7"}}></div>
             </div>
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function MigrationReport({ metrics }) {
           <div>
             <div className="rc-label">MIGRATION VERDICT</div>
             <div className="rc-val" style={{color: "var(--green)", fontSize: "2rem"}}>{metrics.verdict}</div>
-            <div className="rc-sub">All quality thresholds met. Bedrock outperforms source on fundamental KPIs.</div>
+            <div className="rc-sub">All quality thresholds met. NVIDIA outperforms source on fundamental KPIs.</div>
             <div className="verdict-badge bg-green-500/10 border border-green-500 text-green-400 mt-4 px-3 py-1 font-mono text-xs inline-block shadow-[0_0_10px_rgba(34,211,160,0.3)]">
               ✓ CONFIDENCE SCORE: {metrics.confidence} — PREPARE FOR DEPLOYMENT
             </div>

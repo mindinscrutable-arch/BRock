@@ -29,6 +29,7 @@ class AnalyzeResponse(BaseModel):
 class CompareResponse(BaseModel):
     analysis: AnalyzeResponse
     execution: Dict[str, Any]
+    metrics: Dict[str, Any]
 
 class TranslateRequest(BaseModel):
     provider: str = Field(default="xai", description="Source provider (e.g., xai)")
@@ -40,7 +41,8 @@ class TranslateResponse(BaseModel):
     bedrock_payload: Dict[str, Any]
 
 class CompareRequest(BaseModel):
-    model: str = Field(..., description="Target model name")
+    target_model: str = Field(..., description="Target model name")
+    source_model: str = Field(default="grok-beta", description="Source model name")
     payload: Dict[str, Any] = Field(..., description="Translated or source payload")
     provider: str = Field(default="xai", description="Source provider")
 

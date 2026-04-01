@@ -2,18 +2,17 @@ import time
 import asyncio
 from typing import Dict, Any
 
-from app.integrations.openai_client import OpenAIClient
-from app.integrations.bedrock_client import BedrockClient
+from app.integrations.nvidia_client import call_nvidia
+from app.integrations.groq_client import invoke_source_model
 
 class ExecutionOrchestrator:
     """
-    Orchestrates execution of the source provider model and the configured Bedrock alternative side-by-side.
+    Orchestrates execution of the source provider model and the configured target model side-by-side.
     Tracks latency and maps both results to a consistent schema for the downstream evaluation engine.
     """
     
     def __init__(self):
-        self.openai_client = OpenAIClient()
-        self.bedrock_client = BedrockClient()
+        pass # Cleaned up obsolete clients
 
     async def run_comparison(
         self, 
@@ -28,91 +27,40 @@ class ExecutionOrchestrator:
         Run both models concurrently and track their latency.
         """
         inference_config = inference_config or {}
-        temperature = inference_config.get("temperature", 0.7)
-        max_tokens = inference_config.get("max_tokens", 1000)
 
-        # Define tasks based on provider
-        source_task = None
-        if source_provider.lower() == "openai":
-            source_task = self._run_openai(source_model, source_messages, temperature, max_tokens)
-        else:
-            raise NotImplementedError(f"Source provider {source_provider} is not supported yet.")
+        # 1. Source Task: We dynamically trigger Sahitya's Groq LLaMA pipeline
+        try:
+            import json
+            payload_str = json.dumps(source_messages) 
+        except Exception:
+            payload_str = str(source_messages)
+            
+        source_task = invoke_source_model(source_model, payload_str)
 
-        bedrock_task = self._run_bedrock(bedrock_model, bedrock_messages, temperature, max_tokens)
+        # 2. Target Task: Trigger Native NVIDIA Mapping dynamically over distinct families synchronously 
+        target_task = asyncio.to_thread(call_nvidia, bedrock_messages, bedrock_model)
 
-        # Execute side-by-side
-        source_result, bedrock_result = await asyncio.gather(source_task, bedrock_task)
+        # 3. Parallel Execution Join
+        groq_result, target_result = await asyncio.gather(source_task, target_task)
 
-        return {
-            "source": source_result,
-            "bedrock": bedrock_result
+        # 4. Homogeneous Payload Formatting for the UI Dashboard
+        mapped_source_result = {
+            "success": groq_result.get("latency_ms", 0) > 0,
+            "content": groq_result.get("text", "Groq Execution Failed."),
+            "latency_ms": groq_result.get("latency_ms", 0),
+            "tokens": groq_result.get("tokens", 1)
         }
 
-    async def _run_openai(self, model: str, messages: list, temperature: float, max_tokens: int) -> Dict[str, Any]:
-        start_time = time.time()
-        try:
-            response = await self.openai_client.generate_chat_response(
-                model_id=model,
-                messages=messages,
-                temperature=temperature,
-                max_tokens=max_tokens
-            )
-            latency = (time.time() - start_time) * 1000 # milliseconds
-            content = response["choices"][0]["message"]["content"]
-            tokens = response["usage"]["total_tokens"]
-            
-            return {
-                "success": True,
-                "content": content,
-                "latency_ms": round(latency, 2),
-                "tokens": tokens,
-                "raw_response": response
+        return {
+            "source": mapped_source_result,
+            "target": {
+                "success": target_result["success"], 
+                "content": target_result["content"],
+                "latency_ms": target_result["latency_ms"],
+                "tokens": target_result["tokens"],
+                "raw_response": {"model": bedrock_model}
             }
-        except Exception as e:
-            return {
-                "success": False,
-                "error": str(e),
-                "latency_ms": round((time.time() - start_time) * 1000, 2)
-            }
+        }
 
-    async def _run_bedrock(self, model: str, messages: list, temperature: float, max_tokens: int) -> Dict[str, Any]:
-        start_time = time.time()
-        try:
-            # The Converse API client is synchronous locally; using run_in_executor to avoid blocking the event loop
-            loop = asyncio.get_event_loop()
-            
-            # Use partials or lambda to hit the BedrockClient which wraps the converse API
-            response = await loop.run_in_executor(
-                None, 
-                lambda: self.bedrock_client.generate_chat_response(
-                    model_id=model, 
-                    messages=messages,
-                    temperature=temperature,
-                    max_tokens=max_tokens
-                )
-            )
-            
-            latency = (time.time() - start_time) * 1000 # milliseconds # type: ignore
-            
-            # Extract content from converse API format
-            # { "output": { "message": { "content": [{ "text": "..." }] } } }
-            output_message = response.get("output", {}).get("message", {})
-            content_blocks = output_message.get("content", [])
-            content = "".join([block.get("text", "") for block in content_blocks if "text" in block])
-            
-            usage = response.get("usage", {})
-            tokens = usage.get("totalTokens", 0)
-            
-            return {
-                "success": True,
-                "content": content,
-                "latency_ms": round(latency, 2),
-                "tokens": tokens,
-                "raw_response": response
-            }
-        except Exception as e:
-            return {
-                "success": False,
-                "error": str(e),
-                "latency_ms": round((time.time() - start_time) * 1000, 2)
-            }
+
+

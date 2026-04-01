@@ -9,7 +9,7 @@ import { translatePrompt, executeComparison, saveComparisonMetrics } from '../se
 export default function LandingPage() {
   useMigrationDemo();
 
-  const [sourceModel, setSourceModel] = useState('grok-beta');
+  const [sourceModel, setSourceModel] = useState('llama-3.1-8b-instant');
   const [targetModel, setTargetModel] = useState(null); 
   const [inputPrompt, setInputPrompt] = useState('');
   
@@ -45,7 +45,7 @@ export default function LandingPage() {
     if (!translatedPrompt || !targetModel) return;
     setIsExecuting(true);
     try {
-      const res = await executeComparison({ translatedPrompt, targetModel });
+      const res = await executeComparison({ translatedPrompt, targetModel, sourceModel });
       setExecutionResult(res.data);
       await saveComparisonMetrics({ source: sourceModel, destination: targetModel, comparisonData: res.data });
     } catch (err) {
@@ -68,7 +68,7 @@ export default function LandingPage() {
 
       {/* NAV */}
       <nav>
-        <div className="nav-logo">BRIDGEROCK<span></span> <div className="nav-badge" style={{marginLeft: "12px"}}>AMAZON BEDROCK</div></div>
+        <div className="nav-logo">BRIDGEROCK<span></span> <div className="nav-badge" style={{marginLeft: "12px"}}>NVIDIA NIMS</div></div>
         <div className="nav-links">
           <a href="#cta" onClick={scrollToApp}>Migration Studio</a>
         </div>
@@ -88,11 +88,11 @@ export default function LandingPage() {
             <div className="hero-brand-line" id="brand-line1">BRIDGEROCK</div>
             <div className="hero-brand-line line-factory" id="brand-line2" style={{fontFamily: "'Instrument Serif',serif", fontStyle: "italic", fontSize: "clamp(3rem,8vw,7rem)"}}></div>
           </div>
-          <div className="hero-brand-sub">MIGRATION FACTORY FOR AMAZON BEDROCK</div>
+          <div className="hero-brand-sub">MIGRATION FACTORY FOR NVIDIA NIMS</div>
         </div>
 
         <p className="hero-desc">
-          Move your AI applications from OpenAI, Google Vertex AI, or Azure OpenAI to Amazon Bedrock — without rebuilding
+          Move your AI applications from OpenAI, Google Vertex AI, or Azure OpenAI to NVIDIA NIMs — without rebuilding
           from scratch. Intelligent translation. Zero vendor lock-in.
         </p>
 
@@ -128,7 +128,7 @@ export default function LandingPage() {
           <div className="marquee-item"><span>◆</span> SIDE-BY-SIDE BENCHMARKING</div>
           <div className="marquee-item"><span>◆</span> COST ANALYSIS</div>
           <div className="marquee-item"><span>◆</span> LLM-AS-JUDGE EVALUATION</div>
-          <div className="marquee-item"><span>◆</span> AMAZON BEDROCK NATIVE</div>
+          <div className="marquee-item"><span>◆</span> NVIDIA NIMS NATIVE</div>
           <div className="marquee-item"><span>◆</span> ZERO VENDOR LOCK-IN</div>
           <div className="marquee-item"><span>◆</span> ENTERPRISE READY</div>
           <div className="marquee-item"><span>◆</span> PROMPT TRANSLATION</div>
@@ -136,7 +136,7 @@ export default function LandingPage() {
           <div className="marquee-item"><span>◆</span> SIDE-BY-SIDE BENCHMARKING</div>
           <div className="marquee-item"><span>◆</span> COST ANALYSIS</div>
           <div className="marquee-item"><span>◆</span> LLM-AS-JUDGE EVALUATION</div>
-          <div className="marquee-item"><span>◆</span> AMAZON BEDROCK NATIVE</div>
+          <div className="marquee-item"><span>◆</span> NVIDIA NIMS NATIVE</div>
           <div className="marquee-item"><span>◆</span> ZERO VENDOR LOCK-IN</div>
           <div className="marquee-item"><span>◆</span> ENTERPRISE READY</div>
         </div>
@@ -149,7 +149,7 @@ export default function LandingPage() {
           <div className="section-label" style={{justifyContent: "center"}}>LLM MIGRATION STUDIO</div>
           <h2 className="section-title">Ready to<br /><em>break free?</em></h2>
           <p className="cta-sub">
-            Paste your original AI Prompt below and allow BridgeRock to intelligently translate it to Amazon Bedrock syntax, completely handling system roles, tool calling, and JSON schemas.
+            Paste your original AI Prompt below and allow BridgeRock to intelligently translate it to NVIDIA NIMs syntax, completely handling system roles, tool calling, and JSON schemas.
           </p>
         </div>
       </section>
@@ -213,7 +213,7 @@ export default function LandingPage() {
       {/* FOOTER */}
       <footer>
         <div className="footer-logo">BRIDGEROCK<span>_</span>MIGRATOR</div>
-        <div className="footer-right">HACKATHON PROJECT · AMAZON BEDROCK MIGRATION FACTORY · 2026</div>
+        <div className="footer-right">HACKATHON PROJECT · NVIDIA NIMS MIGRATION FACTORY · 2026</div>
       </footer>
     </>
   );

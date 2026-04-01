@@ -22,7 +22,7 @@ export default function TranslationDiff({ originalPrompt, translatedPrompt, isLo
       <div className="bg-[#111827] border border-gray-800 rounded-lg p-10 flex flex-col items-center justify-center text-center opacity-60 shadow-lg min-h-[300px]">
         <span className="text-4xl mb-4">🔁</span>
         <h3 className="text-gray-400 font-medium tracking-wide">WAITING FOR PAYLOAD</h3>
-        <p className="text-sm text-gray-500 max-w-sm mt-2">Paste an OpenAI or Vertex AI payload on the left and click translate to visually map the Amazon Bedrock equivalent JSON structure.</p>
+        <p className="text-sm text-gray-500 max-w-sm mt-2">Paste an OpenAI or Vertex AI payload on the left and click translate to visually map the NVIDIA NIMs equivalent JSON structure.</p>
       </div>
     );
   }
@@ -44,7 +44,7 @@ export default function TranslationDiff({ originalPrompt, translatedPrompt, isLo
         </h2>
         {translatedPrompt && !isLoading && (
           <span className="text-[10px] tracking-widest text-[#00c8ff] uppercase bg-[#00c8ff]/10 px-2.5 py-1 rounded-full border border-[#00c8ff]/30 shadow-[0_0_10px_rgba(0,200,255,0.2)]">
-            BEDROCK SCHEMA COMPLETE ⚡
+            NVIDIA SCHEMA COMPLETE ⚡
           </span>
         )}
       </div>
@@ -66,7 +66,7 @@ export default function TranslationDiff({ originalPrompt, translatedPrompt, isLo
 
         {/* Translation Output Viewer */}
         <div className="flex flex-col gap-2 relative">
-          <label className="text-[11px] uppercase tracking-wider text-green-400 font-bold drop-shadow-[0_0_4px_rgba(34,211,160,0.4)]">Translated Bedrock Schema</label>
+          <label className="text-[11px] uppercase tracking-wider text-green-400 font-bold drop-shadow-[0_0_4px_rgba(34,211,160,0.4)]">Translated NVIDIA Schema</label>
           <div className="bg-[#0b1219] rounded border border-gray-800 overflow-auto max-h-[450px] shadow-[inset_0_0_20px_rgba(34,211,160,0.03)] text-xs flex-1 relative">
             {isLoading && (
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[#0b1219]/90 backdrop-blur-[2px]">

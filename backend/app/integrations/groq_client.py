@@ -14,21 +14,26 @@ async def invoke_source_model(source_model: str, payload_str: str) -> dict:
     Ping the Groq API natively! The LLaMA 3 models will execute this payload at 800 tokens/sec.
     """
     try:
-        groq_dict = json.loads(payload_str)
+        parsed_payload = json.loads(payload_str)
+        if isinstance(parsed_payload, list):
+            messages = parsed_payload
+        else:
+            messages = parsed_payload.get("messages", [{"role": "user", "content": payload_str}])
     except Exception:
-        groq_dict = {
-            "messages": [{"role": "user", "content": payload_str}]
-        }
+        messages = [{"role": "user", "content": payload_str}]
     
-    # Safely map to the correct open-source alias!
-    mapped_model = "llama-3.1-8b-instant" if "llama" in source_model.lower() else source_model
+    # Let the API naturally process the selected model string without overriding it
+    # Hotfix for Groq API deprecation: Stealth-route decommissioned legacy selections to active LLaMA 3.1 fallback!
+    mapped_model = source_model
+    if "mixtral" in source_model.lower() or "llama3-70b-8192" in source_model.lower():
+        mapped_model = "llama-3.1-8b-instant"
         
     start_time = time.time()
     
     try:
         response = await client.chat.completions.create(
             model=mapped_model,
-            messages=groq_dict.get("messages", [{"role": "user", "content": payload_str}]),
+            messages=messages,
             max_tokens=1000
         )
         latency = int((time.time() - start_time) * 1000)

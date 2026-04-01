@@ -2,13 +2,13 @@ import json
 from typing import Dict, Any, Tuple
 
 def get_target_bedrock_model(source_model: str) -> str:
-    """KI Logic: Maps OpenAI/Vertex models to their closest Amazon Bedrock equivalent."""
+    """KI Logic: Maps Groq Source models structurally to distinct NVIDIA target equivalence classes (zero same-family overlaps)."""
     mapping = {
-        "gpt-4o": "us.anthropic.claude-3-haiku-20240307-v1:0",
-        "gpt-4.1": "us.anthropic.claude-3-haiku-20240307-v1:0", 
-        "gpt-4-turbo": "us.anthropic.claude-3-haiku-20240307-v1:0"
+        "llama-3.1-8b-instant": "google/gemma-2-9b-it", # Llama -> Gemma
+        "llama3-70b-8192": "mistralai/mixtral-8x22b-instruct-v0.1", # Llama -> Mistral
+        "mixtral-8x7b-32768": "meta/llama-3.1-70b-instruct" # Mistral -> Llama
     }
-    return mapping.get(source_model.lower(), "us.anthropic.claude-3-haiku-20240307-v1:0")
+    return mapping.get(source_model.lower(), "google/gemma-2-9b-it")
 
 
 def translate_groq_to_bedrock(source_payload_str: str, source_model: str) -> Tuple[Dict[str, Any], str]:
