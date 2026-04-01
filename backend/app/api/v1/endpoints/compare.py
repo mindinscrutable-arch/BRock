@@ -1,45 +1,35 @@
 from fastapi import APIRouter
 from app.models.migration import AnalyzeRequest, CompareResponse
 from app.services.analysis.prompt_analyzer import PromptAnalyzer
-
-# MOCK: Teammate hasn't pushed orchestrator.py yet, so we mock their function locally 
-# to keep the API layer running strictly without touching the services/ folder.
-async def run_comparison(source_model: str, source_payload: dict, bedrock_model: str, bedrock_payload: dict):
-    return {
-        "status": "success",
-        "similarity_score": 0.94,
-        "source": {
-            "output": "Mock output from source model.",
-            "latency_ms": 1250,
-            "cost_usd": 0.04
-        },
-        "bedrock": {
-            "output": "Mock output from Amazon Bedrock model. Results look great.",
-            "latency_ms": 680,
-            "cost_usd": 0.015
-        }
-    }
+from app.services.execution.orchestrator import ExecutionOrchestrator
 
 router = APIRouter()
 
 @router.post("/", response_model=CompareResponse)
 async def compare_models(request: AnalyzeRequest):
 
-    # Step 1: Analyze + Translate (Using static method correctly)
+    # Step 1: Analyze + Translate
     analysis = PromptAnalyzer.analyze_and_translate(
         payload=request.prompt,
         source_model=request.model
     )
 
-    # Step 2: Execute both models
-    execution_result = await run_comparison(
+    # Step 2: Extract formatted payloads to match strict Orchestrator requirements
+    source_messages = request.prompt.get("messages", [])
+    bedrock_messages = analysis["target"]["bedrock_payload"].get("messages", [])
+
+    # Step 3: Execute both models concurrently
+    orchestrator = ExecutionOrchestrator()
+    execution_result = await orchestrator.run_comparison(
+        source_provider=request.provider,
         source_model=request.model,
-        source_payload=request.prompt,
+        source_messages=source_messages,
         bedrock_model=analysis["target"]["model"],
-        bedrock_payload=analysis["target"]["bedrock_payload"]
+        bedrock_messages=bedrock_messages,
+        inference_config={"temperature": 0.7, "max_tokens": 1000}
     )
 
-    # Step 3: Return combined result
+    # Step 4: Return combined result
     return {
         "analysis": analysis,
         "execution": execution_result

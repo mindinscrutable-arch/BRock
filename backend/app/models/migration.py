@@ -29,3 +29,23 @@ class AnalyzeResponse(BaseModel):
 class CompareResponse(BaseModel):
     analysis: AnalyzeResponse
     execution: Dict[str, Any]
+
+class TranslateRequest(BaseModel):
+    provider: str = Field(..., description="Source provider (e.g., openai)")
+    model: str = Field(..., description="Source model name")
+    prompt: Dict[str, Any] = Field(..., description="JSON structure of the prompt")
+
+class TranslateResponse(BaseModel):
+    target_model: str
+    bedrock_payload: Dict[str, Any]
+
+class ReportRequest(BaseModel):
+    provider: str
+    model: str
+    comparison_data: Dict[str, Any] = Field(..., description="The output from the /compare endpoint")
+    cost_savings_pct: float = Field(default=0.0)
+
+class ReportResponse(BaseModel):
+    job_id: str
+    report_s3_key: str
+    status: str
