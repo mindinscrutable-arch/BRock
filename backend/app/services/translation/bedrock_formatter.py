@@ -27,12 +27,34 @@ class BedrockFormatter:
             else:
                 system_instructions = json_instruction
         
+        # AWS Converse API requires 'content' to be a list of blocks, e.g. [{"text": "string content"}]
+        bedrock_messages = []
+        for msg in messages:
+            content = msg.get("content", "")
+            if isinstance(content, str):
+                formatted_content = [{"text": content}]
+            elif isinstance(content, list):
+                # If it's already a list (like OpenAI vision payloads), map text fields properly
+                formatted_content = []
+                for block in content:
+                    if block.get("type") == "text":
+                        formatted_content.append({"text": block.get("text", "")})
+                    else:
+                        formatted_content.append(block) # Pass through other unknown blocks natively
+            else:
+                formatted_content = [{"text": str(content)}]
+                
+            bedrock_messages.append({
+                "role": msg.get("role", "user"),
+                "content": formatted_content
+            })
+
         formatted_payload = {
             "anthropic_version": "bedrock-2023-05-31",
             "max_tokens": parameters.get("max_tokens", 1000),
             "temperature": parameters.get("temperature", 0.7),
             "top_p": parameters.get("top_p", 1.0),
-            "messages": messages
+            "messages": bedrock_messages
         }
         
         # System is a top level parameter in Claude Messages API

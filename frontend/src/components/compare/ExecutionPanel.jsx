@@ -53,7 +53,7 @@ export default function ExecutionPanel({ onExecute, isExecuting, executionResult
       </div>
 
       <p className="text-xs text-gray-400 leading-relaxed mb-1">
-        Run the fully mapped prompt against Amazon Bedrock ({targetModel}). This action invokes the backend dual-execution engine, triggering LLM inference and streaming evaluation metrics.
+        Run the fully mapped prompt against NVIDIA NIMs ({targetModel}). This action invokes the backend dual-execution engine, triggering LLM inference and streaming evaluation metrics.
       </p>
 
       <button 
@@ -80,7 +80,7 @@ export default function ExecutionPanel({ onExecute, isExecuting, executionResult
                   <span className="whitespace-pre-wrap leading-relaxed">{animatedSource}<span className={animatedSource.length < executionResult.sourceOutput.length ? "inline-block w-1.5 h-3.5 bg-gray-400 animate-pulse ml-0.5" : "hidden"}></span></span>
                 )}
              </div>
-             {/* Target Bedrock Output */}
+             {/* Target NVIDIA Output */}
              <div className="border border-[#00c8ff]/20 rounded bg-[#0b1724] p-4 text-xs font-mono text-cyan-50 min-h-[150px] shadow-[inset_0_0_15px_rgba(0,200,255,0.03)] relative">
                 <div className="border-b border-[#00c8ff]/20 pb-2 mb-3 text-[10px] text-[#00c8ff] uppercase tracking-widest flex justify-between items-center">
                   <div className="flex items-center gap-2">

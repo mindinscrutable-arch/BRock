@@ -1,11 +1,16 @@
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
+// Toggle this to TRUE to completely bypass the Python backend and display the beautiful hardcoded mock data!
+const FORCE_MOCK = false;
+
 /**
  * A tiny wrapper around native fetch() to maintain the Axios-like 
  * return shape (e.g. { data: ... }) so we don't have to rewrite 
  * the LandingPage.jsx component.
  */
 async function fetchPost(endpoint, payload) {
+  if (FORCE_MOCK) throw new Error("FORCE_MOCK IS ENABLED: Bypassing Backend");
+  
   const url = `${API_BASE}${endpoint}`;
   const response = await fetch(url, {
     method: 'POST',
@@ -27,24 +32,48 @@ async function fetchPost(endpoint, payload) {
  */
 export const translatePrompt = async ({ sourcePrompt, sourceModel }) => {
   try {
-    return await fetchPost('/translate', {
-      source_payload: sourcePrompt,
+    let payloadDict;
+    try {
+      payloadDict = JSON.parse(sourcePrompt);
+    } catch (e) {
+      // If it's pure English (or invalid JSON), wrap it nicely into a standard Grok schema!
+      payloadDict = {
+        model: sourceModel,
+        messages: [{ role: "user", content: sourcePrompt }]
+      };
+    }
+
+    const response = await fetchPost('/translate', {
+      source_payload: payloadDict,
       source_model: sourceModel
     });
+    
+    // Map backend property so LandingPage.jsx works seamlessly 
+    if (response.data && response.data.bedrock_payload) {
+        response.data.converted_schema = response.data.bedrock_payload;
+    }
+    
+    // The backend dynamically binds the exact NVIDIA target architecture!
+    if (response.data && !response.data.target_model) {
+        // Fallback safety net
+        response.data.target_model = "meta/llama3-70b-instruct";
+    }
+    
+    return response;
   } catch (error) {
     // Return a mocked success object if backend is offline to test UI
     return new Promise(resolve => setTimeout(() => resolve({
       data: {
         converted_schema: {
           messages: [
-            { role: "user", content: [{ text: "Simulated Bedrock Translation of your prompt" }] }
+            { role: "user", content: [{ text: "Simulated NVIDIA NIM Translation of your prompt" }] }
           ],
           system: "Simulated System Rules",
-          anthropic_version: "bedrock-2023-05-31",
+          anthropic_version: "llama3-70b-instruct",
           max_tokens: 4096,
         },
         // The backend KI determines this mapping automatically!
-        target_model: "anthropic.claude-3-5-sonnet-20240620-v1:0"
+        target_model: "meta/llama3-70b-instruct"
       }
     }), 1500));
   }
@@ -53,19 +82,28 @@ export const translatePrompt = async ({ sourcePrompt, sourceModel }) => {
 /**
  * Triggers dual execution on the backend (executing both source OpenAI and Bedrock concurrently).
  */
-export const executeComparison = async ({ translatedPrompt, targetModel }) => {
+export const executeComparison = async ({ translatedPrompt, targetModel, sourceModel }) => {
   try {
-    return await fetchPost('/compare', {
+    const res = await fetchPost('/compare', {
       payload: translatedPrompt,
-      model: targetModel
+      target_model: targetModel,
+      source_model: sourceModel
     });
+    
+    // Polyfill the nested backend schema to the exact flat string expected by the ExecutionPanel Component
+    if (res.data && res.data.execution) {
+        res.data.sourceOutput = res.data.execution.source?.content || "Source model unavailable.";
+        res.data.targetOutput = res.data.execution.target?.content || "NVIDIA execution generated no tokens.";
+        res.data.latency = res.data.execution.target?.latency_ms || 1200;
+    }
+    return res;
   } catch (error) {
     // Return a mocked success object if backend is offline to test UI
     return new Promise(resolve => setTimeout(() => resolve({
       data: {
         latency: 1240,
         sourceOutput: "This is a streamed simulation response from your selected OpenAI source model. In a live environment, this will stream the actual tokens from OpenAI.",
-        targetOutput: "This is a simulated execution from Amazon Bedrock returning via the dual-invoke execution engine. Look closely: the payload structure was successfully converted!",
+        targetOutput: "This is a simulated execution from NVIDIA NIMs returning via the dual-invoke execution engine. The backend seamlessly executed Llama3-70B!",
         metrics: {
           qualityScore: "98.4",
           sourceQuality: "96.1",

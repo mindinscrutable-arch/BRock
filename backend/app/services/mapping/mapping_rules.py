@@ -2,21 +2,21 @@ from typing import Dict, Any, List
 
 # Core mapping rules from source providers to Amazon Bedrock models
 MODEL_MAPPING_RULES: Dict[str, Dict[str, Any]] = {
-    # xAI Grok to Bedrock Mappings
+    # xAI Grok to Bedrock Mappings (Bypassing Claude due to Billing restrictions)
     "grok-beta": {
-        "target_model_id": "anthropic.claude-3-5-sonnet-20240620-v1:0",
-        "provider": "anthropic",
-        "reasons": ["Comparable reasoning capabilities", "Equivalent intelligence and latency"],
+        "target_model_id": "amazon.nova-lite-v1:0",
+        "provider": "amazon",
+        "reasons": ["Selected Amazon Nova explicitly to avoid AWS Marketplace billing restrictions"],
     },
     "grok-2": {
-        "target_model_id": "anthropic.claude-3-5-sonnet-20240620-v1:0",
-        "provider": "anthropic",
-        "reasons": ["Top tier Grok equivalent", "Native multimodal support (if needed)"],
+        "target_model_id": "amazon.nova-lite-v1:0",
+        "provider": "amazon",
+        "reasons": ["Selected Amazon Nova explicitly to avoid AWS Marketplace billing restrictions"],
     },
     "grok-2-mini": {
-        "target_model_id": "anthropic.claude-3-haiku-20240307-v1:0",
-        "provider": "anthropic",
-        "reasons": ["High speed, low cost equivalent", "Excellent for standard text tasks"],
+        "target_model_id": "amazon.nova-lite-v1:0",
+        "provider": "amazon",
+        "reasons": ["Selected Amazon Nova explicitly to avoid AWS Marketplace billing restrictions"],
     },
     "text-embedding-ada-002": {
         "target_model_id": "amazon.titan-embed-text-v1",
@@ -44,4 +44,4 @@ MODEL_MAPPING_RULES: Dict[str, Dict[str, Any]] = {
 
 def get_default_bedrock_model() -> str:
     """Returns a safe default model if mapping fails."""
-    return "anthropic.claude-3-haiku-20240307-v1:0"
+    return "amazon.nova-lite-v1:0"

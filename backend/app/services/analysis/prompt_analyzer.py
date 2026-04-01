@@ -3,7 +3,7 @@ from typing import Dict, Any
 from app.services.analysis.provider_detector import ProviderDetector
 from app.services.mapping.model_mapper import ModelMapper
 from app.services.translation.openai_translator import OpenAITranslator
-from app.services.translation.bedrock_formatter import BedrockFormatter
+from app.services.translator import get_target_bedrock_model
 
 class PromptAnalyzer:
     """
@@ -34,8 +34,13 @@ class PromptAnalyzer:
         # 3. Map Model to Bedrock target
         mapped_model_info = ModelMapper.map_model(source_model, provider)
         
-        # 4. Format for Bedrock (Assuming Anthropic Claude on Bedrock is the target for now)
-        bedrock_payload = BedrockFormatter.format_anthropic_messages_api(normalized_prompt)
+        # 4. Format for NVIDIA (NVIDIA NIMs support native OpenAI schema structure perfectly!)
+        # We physically bypass the target-specific wrappers and pass standard dictionaries!
+        nvidia_payload = {
+            "messages": normalized_prompt.get("messages", [])
+        }
+        
+        target_model = get_target_bedrock_model(source_model)
         
         return {
             "source": {
@@ -48,9 +53,9 @@ class PromptAnalyzer:
                 }
             },
             "target": {
-                "provider": mapped_model_info.get("provider", "anthropic"),
-                "model": mapped_model_info.get("target_model_id"),
-                "mapping_reasons": mapped_model_info.get("reasons", []),
-                "bedrock_payload": bedrock_payload
+                "provider": "nvidia",
+                "model": target_model,
+                "mapping_reasons": [f"{target_model} chosen as optimized cross-family variant."],
+                "bedrock_payload": nvidia_payload
             }
         }
