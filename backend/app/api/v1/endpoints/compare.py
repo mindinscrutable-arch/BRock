@@ -2,7 +2,7 @@ import asyncio
 import json
 from fastapi import APIRouter
 from app.models.schemas import CompareRequest, CompareResponse, CompareMetrics
-from app.aws.bedrock import invoke_target_model
+from app.integrations.google_client import invoke_target_model
 from app.integrations.groq_client import invoke_source_model
 
 router = APIRouter()
@@ -11,22 +11,23 @@ router = APIRouter()
 async def execute_comparison(request: CompareRequest):
     """
     Races the exact same prompt against the Source SDK (Groq LLaMA) and
-    the Target Runtime (Amazon Bedrock) concurrently via asyncio to evaluate latency and quality.
+    the Target Runtime (Google Vertex / Gemini) concurrently via asyncio to evaluate latency and quality.
     """
     
     # We can use the original payload directly,
-    # but since this is a migration test, we reconstruct it minimally for Groq using the text from Bedrock Schema
-    sys_str = request.payload.get("system", "")
+    # but since this is a migration test, we reconstruct it minimally for Groq using the text from Google Vertex Schema
+    system_instruction = request.payload.get("systemInstruction", {}).get("parts", [{"text": ""}])[0].get("text", "")
     msgs = request.payload.get("messages", [])
     
     groq_reconstructed = {
         "messages": []
     }
-    if sys_str:
-        groq_reconstructed["messages"].append({"role": "system", "content": sys_str})
-    for m in msgs:
-        text_content = m.get("content", [{}])[0].get("text", "")
-        groq_reconstructed["messages"].append({"role": m.get("role", "user"), "content": text_content})
+    if system_instruction:
+        groq_reconstructed["messages"].append({"role": "system", "content": system_instruction})
+    for content in request.payload.get("contents", []):
+        text_content = content.get("parts", [{"text": ""}])[0].get("text", "")
+        role = content.get("role", "user")
+        groq_reconstructed["messages"].append({"role": "assistant" if role == "model" else "user", "content": text_content})
         
     source_task = invoke_source_model(
         source_model="llama-3.1-8b-instant", # Fallback default
@@ -36,7 +37,7 @@ async def execute_comparison(request: CompareRequest):
     target_task = asyncio.to_thread(
         invoke_target_model,
         target_model=request.model,
-        bedrock_schema=request.payload
+        google_schema=request.payload
     )
 
     source_result, target_result = await asyncio.gather(source_task, target_task)

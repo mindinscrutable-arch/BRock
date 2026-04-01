@@ -1,21 +1,21 @@
 from fastapi import APIRouter
 from app.models.schemas import TranslateRequest, TranslateResponse
-from app.services.translator import translate_groq_to_bedrock
+from app.services.translator import translate_groq_to_google
 
 router = APIRouter()
 
 @router.post("/", response_model=TranslateResponse)
 async def translate_prompt(request: TranslateRequest):
     """
-    Receives an OpenAI JSON payload and completely translates the
-    architecture format to an Amazon Bedrock Converse API format explicitly via 'KI'.
+    Receives a valid LLM JSON payload and completely translates the
+    architecture format to an explicitly mapped Google Gemini API format via Engine logic.
     """
-    bedrock_schema, mapped_model = translate_groq_to_bedrock(
+    google_schema, mapped_model = translate_groq_to_google(
         source_payload_str=request.source_payload,
         source_model=request.source_model
     )
     
     return TranslateResponse(
-        converted_schema=bedrock_schema,
+        converted_schema=google_schema,
         target_model=mapped_model
     )

@@ -68,7 +68,7 @@ export default function LandingPage() {
 
       {/* NAV */}
       <nav>
-        <div className="nav-logo">BRIDGEROCK<span></span> <div className="nav-badge" style={{marginLeft: "12px"}}>AMAZON BEDROCK</div></div>
+        <div className="nav-logo">BRIDGEROCK<span></span> <div className="nav-badge" style={{marginLeft: "12px"}}>GOOGLE VERTEX / GEMINI</div></div>
         <div className="nav-links">
           <a href="#cta" onClick={scrollToApp}>Migration Studio</a>
         </div>
@@ -88,11 +88,11 @@ export default function LandingPage() {
             <div className="hero-brand-line" id="brand-line1">BRIDGEROCK</div>
             <div className="hero-brand-line line-factory" id="brand-line2" style={{fontFamily: "'Instrument Serif',serif", fontStyle: "italic", fontSize: "clamp(3rem,8vw,7rem)"}}></div>
           </div>
-          <div className="hero-brand-sub">MIGRATION FACTORY FOR AMAZON BEDROCK</div>
+          <div className="hero-brand-sub">MIGRATION FACTORY FOR GOOGLE VERTEX AI</div>
         </div>
 
         <p className="hero-desc">
-          Move your AI applications from Groq (LLaMA), Google Vertex AI, or Azure to Amazon Bedrock — without rebuilding
+          Move your AI applications from Groq (LLaMA), Google Vertex AI, or Azure to Google Vertex — without rebuilding
           from scratch. Intelligent translation. Zero vendor lock-in.
         </p>
 
@@ -128,7 +128,7 @@ export default function LandingPage() {
           <div className="marquee-item"><span>◆</span> SIDE-BY-SIDE BENCHMARKING</div>
           <div className="marquee-item"><span>◆</span> COST ANALYSIS</div>
           <div className="marquee-item"><span>◆</span> LLM-AS-JUDGE EVALUATION</div>
-          <div className="marquee-item"><span>◆</span> AMAZON BEDROCK NATIVE</div>
+          <div className="marquee-item"><span>◆</span> GOOGLE VERTEX NATIVE</div>
           <div className="marquee-item"><span>◆</span> ZERO VENDOR LOCK-IN</div>
           <div className="marquee-item"><span>◆</span> ENTERPRISE READY</div>
           <div className="marquee-item"><span>◆</span> PROMPT TRANSLATION</div>
@@ -136,7 +136,7 @@ export default function LandingPage() {
           <div className="marquee-item"><span>◆</span> SIDE-BY-SIDE BENCHMARKING</div>
           <div className="marquee-item"><span>◆</span> COST ANALYSIS</div>
           <div className="marquee-item"><span>◆</span> LLM-AS-JUDGE EVALUATION</div>
-          <div className="marquee-item"><span>◆</span> AMAZON BEDROCK NATIVE</div>
+          <div className="marquee-item"><span>◆</span> GOOGLE VERTEX NATIVE</div>
           <div className="marquee-item"><span>◆</span> ZERO VENDOR LOCK-IN</div>
           <div className="marquee-item"><span>◆</span> ENTERPRISE READY</div>
         </div>
@@ -149,7 +149,7 @@ export default function LandingPage() {
           <div className="section-label" style={{justifyContent: "center"}}>LLM MIGRATION STUDIO</div>
           <h2 className="section-title">Ready to<br /><em>break free?</em></h2>
           <p className="cta-sub">
-            Paste your original AI Prompt below and allow BridgeRock to intelligently translate it to Amazon Bedrock syntax, completely handling system roles, tool calling, and JSON schemas.
+            Paste your original AI Prompt below and allow BridgeRock to intelligently translate it to Google Vertex syntax, completely handling system roles, tool calling, and JSON schemas.
           </p>
         </div>
       </section>
@@ -213,7 +213,7 @@ export default function LandingPage() {
       {/* FOOTER */}
       <footer>
         <div className="footer-logo">BRIDGEROCK<span>_</span>MIGRATOR</div>
-        <div className="footer-right">HACKATHON PROJECT · AMAZON BEDROCK MIGRATION FACTORY · 2026</div>
+        <div className="footer-right">HACKATHON PROJECT · GOOGLE VERTEX MIGRATION FACTORY · 2026</div>
       </footer>
     </>
   );
