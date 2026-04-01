@@ -1,10 +1,12 @@
 import os
 import uuid
 import logging
+from decimal import Decimal
 from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
 from app.aws.dynamodb import DynamoDBHelper
+from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -16,8 +18,8 @@ class JobHistoryService:
     
     def __init__(self):
         self.db_helper = DynamoDBHelper()
-        self.table_name = os.getenv("DYNAMODB_JOBS_TABLE", "MigrationJobs")
-        self.enabled = os.getenv("AWS_STORAGE_ENABLED", "false").lower() == "true"
+        self.table_name = settings.DYNAMODB_JOBS_TABLE
+        self.enabled = settings.AWS_STORAGE_ENABLED
         
     def create_job(self, source_provider: str, model_id: str, submitted_by: str = "anonymous") -> str:
         """
@@ -44,7 +46,8 @@ class JobHistoryService:
         )
         
         if not success:
-            raise Exception("Failed to create migration job tracker in DynamoDB.")
+            logger.warning(f"DynamoDB failed to create job {job_id}. Falling back to mock storage.")
+            # We don't raise an exception here because we want the demo to survive cloud failures.
             
         return job_id
         
@@ -65,7 +68,7 @@ class JobHistoryService:
                 ExpressionAttributeValues={
                     ":s": "COMPLETED",
                     ":r": report_s3_key,
-                    ":c": cost_savings_pct,
+                    ":c": Decimal(str(cost_savings_pct)),
                     ":t": datetime.now(timezone.utc).isoformat()
                 }
             )

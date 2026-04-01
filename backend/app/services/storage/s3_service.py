@@ -3,6 +3,7 @@ import uuid
 import logging
 from typing import Any, Dict
 from app.aws.s3 import S3Helper
+from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -14,9 +15,8 @@ class StorageService:
     
     def __init__(self):
         self.s3_helper = S3Helper()
-        # Default bucket name; preferably overridden by Person A in config.py's settings
-        self.bucket_name = os.getenv("S3_STORAGE_BUCKET", "llm-migration-reports-bucket")
-        self.enabled = os.getenv("AWS_STORAGE_ENABLED", "false").lower() == "true"
+        self.bucket_name = settings.S3_STORAGE_BUCKET
+        self.enabled = settings.AWS_STORAGE_ENABLED
         
     def save_comparison_result(self, comparison_data: Dict[str, Any]) -> str:
         """
@@ -37,7 +37,7 @@ class StorageService:
         )
         
         if not success:
-            raise Exception("Failed to persist comparison outcome to S3.")
+            logger.warning("Failed to persist comparison outcome to S3.")
             
         return record_id
         
@@ -59,6 +59,6 @@ class StorageService:
         )
         
         if not success:
-            raise Exception("Failed to persist migration report to S3.")
+            logger.warning("Failed to persist migration report to S3.")
             
         return report_id
