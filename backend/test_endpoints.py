@@ -12,9 +12,8 @@ print("-" * 50)
 # ----------------------------------------
 print("Executing [POST /api/v1/translate/]")
 translate_payload = {
-    "provider": "openai",
-    "model": "gpt-4",
-    "prompt": {
+    "source_model": "gpt-4",
+    "source_payload": {
         "system": "You are a helpful assistant.",
         "messages": [
             {"role": "user", "content": "What is the fastest way to learn Python?"}
@@ -35,18 +34,18 @@ print("-" * 50)
 # ----------------------------------------
 # TEST 2: The /report Endpoint
 # ----------------------------------------
-print("Executing [POST /api/v1/report/]")
+print("Executing [POST /api/v1/report/save]")
 report_payload = {
-    "provider": "openai",
-    "model": "gpt-4",
-    "comparison_data": {
+    "source_model": "gpt-4",
+    "destination_model": "anthropic.claude-3-5-sonnet-20240620-v1:0",
+    "metrics": {
         "source": {"latency_ms": 1200, "tokens": 150},
         "bedrock": {"latency_ms": 850, "tokens": 140}
     },
-    "cost_savings_pct": 25.5
+    "timestamp": "2026-04-01T12:00:00Z"
 }
 
-response = client.post("/api/v1/report/", json=report_payload)
+response = client.post("/api/v1/report/save", json=report_payload)
 print(f"Status Code: {response.status_code}")
 try:
     print(json.dumps(response.json(), indent=2))

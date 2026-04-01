@@ -13,8 +13,8 @@ async def translate_prompt(request: TranslateRequest):
     
     # Let the analysis engine figure out the optimal parameters and translation
     analysis = PromptAnalyzer.analyze_and_translate(
-        payload=request.prompt,
-        source_model=request.model
+        payload=request.source_payload,
+        source_model=request.source_model
     )
     
     # Extract only the necessary bits for the translation response

@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-@router.post("/", response_model=ReportResponse)
+@router.post("/save")
 async def generate_report(request: ReportRequest):
     """
     Finalizes the migration by logging the complete execution payload to Amazon S3
@@ -23,20 +23,20 @@ async def generate_report(request: ReportRequest):
         
         # Step 1: Create an IN_PROGRESS tracking job in DynamoDB
         job_id = job_service.create_job(
-            source_provider=request.provider,
-            model_id=request.model,
+            source_provider="openai",
+            model_id=request.source_model,
             submitted_by="API_USER"
         )
         
         # Step 2: Push the massive execution artifact to S3
         # Because we only need cost_savings dynamically, we pass the execution payload directly
-        s3_key = storage_service.save_migration_report(report_data=request.comparison_data)
+        s3_key = storage_service.save_migration_report(report_data=request.metrics)
         
         # Step 3: Mark the job COMPLETED in DynamoDB so the frontend picks it up immediately
         success = job_service.complete_job(
             job_id=job_id,
             report_s3_key=s3_key,
-            cost_savings_pct=request.cost_savings_pct
+            cost_savings_pct=0.0
         )
         
         if not success:

@@ -1,21 +1,21 @@
 from fastapi import APIRouter
-from app.models.migration import AnalyzeRequest, CompareResponse
+from app.models.migration import CompareRequest, CompareResponse
 from app.services.analysis.prompt_analyzer import PromptAnalyzer
 from app.services.execution.orchestrator import ExecutionOrchestrator
 
 router = APIRouter()
 
 @router.post("/", response_model=CompareResponse)
-async def compare_models(request: AnalyzeRequest):
+async def compare_models(request: CompareRequest):
 
     # Step 1: Analyze + Translate
     analysis = PromptAnalyzer.analyze_and_translate(
-        payload=request.prompt,
+        payload=request.payload,
         source_model=request.model
     )
 
     # Step 2: Extract formatted payloads to match strict Orchestrator requirements
-    source_messages = request.prompt.get("messages", [])
+    source_messages = request.payload.get("messages", [])
     bedrock_messages = analysis["target"]["bedrock_payload"].get("messages", [])
 
     # Step 3: Execute both models concurrently
