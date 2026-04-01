@@ -6,16 +6,23 @@ function useTypewriter(text, active, speed = 8) {
 
   useEffect(() => {
     if (!active || !text) {
-      if (!text) setDisplayedText('');
+      setDisplayedText('');
       return;
     }
-    setDisplayedText(''); // Reset on new stream
+    
+    let currentText = '';
     let i = 0;
+    
     const interval = setInterval(() => {
-      setDisplayedText((prev) => prev + text.charAt(i));
-      i++;
-      if (i >= text.length) clearInterval(interval);
+      if (i < text.length) {
+        currentText += text.charAt(i);
+        setDisplayedText(currentText);
+        i++;
+      } else {
+        clearInterval(interval);
+      }
     }, speed);
+    
     return () => clearInterval(interval);
   }, [text, active, speed]);
 
