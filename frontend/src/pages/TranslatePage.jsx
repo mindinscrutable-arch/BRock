@@ -1,1 +1,0 @@
-export default function TranslatePage() { return <div>Translate Page</div>; }
