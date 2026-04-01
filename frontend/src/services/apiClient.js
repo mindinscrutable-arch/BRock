@@ -1,27 +1,36 @@
-import axios from 'axios';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
-const API_BASE = 'http://localhost:8000/api/v1';
+/**
+ * A tiny wrapper around native fetch() to maintain the Axios-like 
+ * return shape (e.g. { data: ... }) so we don't have to rewrite 
+ * the LandingPage.jsx component.
+ */
+async function fetchPost(endpoint, payload) {
+  const url = `${API_BASE}${endpoint}`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
 
-// Create a generic axios instance (if needed for interceptors)
-export const api = axios.create({
-  baseURL: API_BASE,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+  if (!response.ok) {
+    throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return { data };
+}
 
 /**
  * Sends original payload to FastAPI to be structurally parsed and mapped
  * to the automatically determined target Bedrock format based on the sourceModel.
  */
 export const translatePrompt = async ({ sourcePrompt, sourceModel }) => {
-  // Placeholder mock response for now, wires up to your real backend soon.
   try {
-    const response = await api.post('/translate', {
+    return await fetchPost('/translate', {
       source_payload: sourcePrompt,
       source_model: sourceModel
     });
-    return response;
   } catch (error) {
     // Return a mocked success object if backend is offline to test UI
     return new Promise(resolve => setTimeout(() => resolve({
@@ -46,11 +55,10 @@ export const translatePrompt = async ({ sourcePrompt, sourceModel }) => {
  */
 export const executeComparison = async ({ translatedPrompt, targetModel }) => {
   try {
-    const response = await api.post('/compare', {
+    return await fetchPost('/compare', {
       payload: translatedPrompt,
       model: targetModel
     });
-    return response;
   } catch (error) {
     // Return a mocked success object if backend is offline to test UI
     return new Promise(resolve => setTimeout(() => resolve({
@@ -84,7 +92,7 @@ export const executeComparison = async ({ translatedPrompt, targetModel }) => {
  */
 export const saveComparisonMetrics = async ({ source, destination, comparisonData }) => {
   try {
-    await api.post('/report/save', {
+    await fetchPost('/report/save', {
       source_model: source,
       destination_model: destination,
       metrics: comparisonData,
