@@ -1277,8 +1277,9 @@
 
     .hero-brand-line .char {
       display: inline-block;
-      color: transparent;
-      -webkit-text-stroke: 1px rgba(255,255,255,0.05);
+      color: #ffffff;
+      -webkit-text-stroke: 0px transparent;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
       transition: none
     }
 
@@ -1304,9 +1305,9 @@
         filter: blur(0.5px)
       }
       100% {
-        color: var(--text);
+        color: #ffffff;
         -webkit-text-stroke: 0px transparent;
-        text-shadow: none;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
         filter: blur(0)
       }
     }
@@ -1324,8 +1325,8 @@
         filter: blur(3px)
       }
       100% {
-        color: var(--muted);
-        text-shadow: none;
+        color: #ffffff;
+        text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
         filter: blur(0)
       }
     }

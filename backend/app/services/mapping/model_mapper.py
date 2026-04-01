@@ -7,7 +7,7 @@ class ModelMapper:
     """
     
     @staticmethod
-    def map_model(source_model_id: str, provider: str = "openai") -> Dict[str, Any]:
+    def map_model(source_model_id: str, provider: str = "xai") -> Dict[str, Any]:
         """
         Takes a source model ID (e.g., 'gpt-4o') and returns the best equivalent Bedrock model.
         """
@@ -18,11 +18,11 @@ class ModelMapper:
             return MODEL_MAPPING_RULES[source_model_id]
             
         # Fallback heuristic based on generic naming patterns if exact match fails
-        if "gpt-4" in source_model_id:
-             return MODEL_MAPPING_RULES["gpt-4"]
+        if "grok-2-mini" in source_model_id or "mini" in source_model_id:
+             return MODEL_MAPPING_RULES.get("grok-2-mini", MODEL_MAPPING_RULES.get("gemini-1.5-flash"))
              
-        if "gpt-3.5" in source_model_id or "gpt-3" in source_model_id:
-             return MODEL_MAPPING_RULES["gpt-3.5-turbo"]
+        if "grok" in source_model_id or "grok-2" in source_model_id:
+             return MODEL_MAPPING_RULES.get("grok-2", MODEL_MAPPING_RULES.get("gemini-1.5-pro"))
              
         if "embed" in source_model_id or "text-embedding" in source_model_id:
              return MODEL_MAPPING_RULES["text-embedding-ada-002"]

@@ -31,7 +31,7 @@ class CompareResponse(BaseModel):
     execution: Dict[str, Any]
 
 class TranslateRequest(BaseModel):
-    provider: str = Field(default="openai", description="Source provider (e.g., openai)")
+    provider: str = Field(default="xai", description="Source provider (e.g., xai)")
     source_model: str = Field(..., description="Source model name")
     source_payload: Dict[str, Any] = Field(..., description="JSON structure of the prompt")
 
@@ -42,7 +42,7 @@ class TranslateResponse(BaseModel):
 class CompareRequest(BaseModel):
     model: str = Field(..., description="Target model name")
     payload: Dict[str, Any] = Field(..., description="Translated or source payload")
-    provider: str = Field(default="openai", description="Source provider")
+    provider: str = Field(default="xai", description="Source provider")
 
 class ReportRequest(BaseModel):
     source_model: str

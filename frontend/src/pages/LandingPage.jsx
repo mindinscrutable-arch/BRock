@@ -9,8 +9,7 @@ import { translatePrompt, executeComparison, saveComparisonMetrics } from '../se
 export default function LandingPage() {
   useMigrationDemo();
 
-  // ----- FUNCTIONAL APP STATES -----
-  const [sourceModel, setSourceModel] = useState('gpt-4o');
+  const [sourceModel, setSourceModel] = useState('grok-beta');
   const [targetModel, setTargetModel] = useState(null); 
   const [inputPrompt, setInputPrompt] = useState('');
   

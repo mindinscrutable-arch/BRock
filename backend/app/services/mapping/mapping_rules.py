@@ -2,24 +2,19 @@ from typing import Dict, Any, List
 
 # Core mapping rules from source providers to Amazon Bedrock models
 MODEL_MAPPING_RULES: Dict[str, Dict[str, Any]] = {
-    # OpenAI to Bedrock Mappings
-    "gpt-4": {
+    # xAI Grok to Bedrock Mappings
+    "grok-beta": {
         "target_model_id": "anthropic.claude-3-5-sonnet-20240620-v1:0",
         "provider": "anthropic",
-        "reasons": ["Comparable reasoning capabilities", "Better cost-efficiency", "Equivalent or better context window"],
+        "reasons": ["Comparable reasoning capabilities", "Equivalent intelligence and latency"],
     },
-    "gpt-4o": {
+    "grok-2": {
         "target_model_id": "anthropic.claude-3-5-sonnet-20240620-v1:0",
         "provider": "anthropic",
-        "reasons": ["Similar speed and high intelligence", "Native multimodal support (if needed)"],
+        "reasons": ["Top tier Grok equivalent", "Native multimodal support (if needed)"],
     },
-    "gpt-4-turbo": {
-        "target_model_id": "anthropic.claude-3-opus-20240229-v1:0",
-        "provider": "anthropic",
-        "reasons": ["High complexity task handling equivalent"],
-    },
-    "gpt-3.5-turbo": {
-        "target_model_id": "anthropic.claude-3-haiku-20240307-v1:0", # or amazon.titan-text-express-v1
+    "grok-2-mini": {
+        "target_model_id": "anthropic.claude-3-haiku-20240307-v1:0",
         "provider": "anthropic",
         "reasons": ["High speed, low cost equivalent", "Excellent for standard text tasks"],
     },
