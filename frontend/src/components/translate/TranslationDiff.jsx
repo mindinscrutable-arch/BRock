@@ -22,7 +22,7 @@ export default function TranslationDiff({ originalPrompt, translatedPrompt, isLo
       <div className="bg-[#111827] border border-gray-800 rounded-lg p-10 flex flex-col items-center justify-center text-center opacity-60 shadow-lg min-h-[300px]">
         <span className="text-4xl mb-4">🔁</span>
         <h3 className="text-gray-400 font-medium tracking-wide">WAITING FOR PAYLOAD</h3>
-        <p className="text-sm text-gray-500 max-w-sm mt-2">Paste an OpenAI or Vertex AI payload on the left and click translate to visually map the Amazon Bedrock equivalent JSON structure.</p>
+        <p className="text-sm text-gray-500 max-w-sm mt-2">Paste a Groq (LLaMA) or Vertex AI payload on the left and click translate to visually map the Amazon Bedrock equivalent JSON structure.</p>
       </div>
     );
   }

@@ -9,7 +9,7 @@ import { translatePrompt, executeComparison, saveComparisonMetrics } from '../se
 export default function LandingPage() {
   useMigrationDemo();
 
-  const [sourceModel, setSourceModel] = useState('grok-beta');
+  const [sourceModel, setSourceModel] = useState('llama-3.1-8b-instant');
   const [targetModel, setTargetModel] = useState(null); 
   const [inputPrompt, setInputPrompt] = useState('');
   
@@ -92,7 +92,7 @@ export default function LandingPage() {
         </div>
 
         <p className="hero-desc">
-          Move your AI applications from OpenAI, Google Vertex AI, or Azure OpenAI to Amazon Bedrock — without rebuilding
+          Move your AI applications from Groq (LLaMA), Google Vertex AI, or Azure to Amazon Bedrock — without rebuilding
           from scratch. Intelligent translation. Zero vendor lock-in.
         </p>
 

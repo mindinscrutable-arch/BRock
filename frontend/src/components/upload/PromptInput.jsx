@@ -41,15 +41,15 @@ export default function PromptInput({ sourceModel, setSourceModel, inputPrompt, 
       {/* Source Model Dropdowns placed above input */}
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
-          <label className="text-xs uppercase tracking-wider text-gray-500 font-medium">Source Model (xAI Grok)</label>
+          <label className="text-xs uppercase tracking-wider text-gray-500 font-medium">Source Model (Groq LLaMA)</label>
           <select 
             value={sourceModel}
             onChange={(e) => setSourceModel(e.target.value)}
             className="bg-[#1f2937] border border-gray-700 text-gray-200 text-sm rounded focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 transition-colors cursor-pointer"
           >
-            <option value="grok-beta">grok-beta</option>
-            <option value="grok-2">grok-2</option>
-            <option value="grok-2-mini">grok-2-mini</option>
+            <option value="llama-3.1-8b-instant">llama-3.1-8b-instant</option>
+            <option value="llama3-70b-8192">llama3-70b-8192</option>
+            <option value="mixtral-8x7b-32768">mixtral-8x7b-32768</option>
           </select>
         </div>
       </div>
@@ -62,7 +62,7 @@ export default function PromptInput({ sourceModel, setSourceModel, inputPrompt, 
           <span>Source Payload (JSON or Raw Text)</span>
           <span 
             className="text-orange-400 cursor-pointer hover:underline text-[10px]"
-            onClick={() => setInputPrompt(`{\n  "model": "grok-beta",\n  "messages": [\n    {\n      "role": "system",\n      "content": "You are a helpful assistant."\n    }\n  ],\n  "tools": [],\n  "response_format": {"type": "json_object"}\n}`)}
+            onClick={() => setInputPrompt(`{\n  "model": "llama-3.1-8b-instant",\n  "messages": [\n    {\n      "role": "system",\n      "content": "You are a helpful assistant."\n    }\n  ],\n  "tools": [],\n  "response_format": {"type": "json_object"}\n}`)}
           >
             Load Example JSON
           </span>
